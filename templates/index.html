@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incident Management Console</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-body: #010d1f;
+            --bg-sidebar: #0f172a;
+            --bg-card: #1e293b;
+            --border-color: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-blue: #2563eb;
+            --accent-red: #dc2626;
+            --accent-green: #16a34a;
+            --sidebar-text: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Professional Dark Sidebar */
+        aside {
+            width: 270px;
+            background-color: var(--bg-sidebar);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            justify-content: space-between;
+        }
+
+        .brand-logo {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 32px;
+            letter-spacing: -0.01em;
+        }
+
+        .brand-logo span {
+            color: var(--accent-blue);
+        }
+
+        .control-group {
+            background-color: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 16px;
+        }
+
+        .control-group label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--sidebar-text);
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        select {
+            width: 100%;
+            padding: 10px 12px;
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: #ffffff;
+            border-radius: 6px;
+            font-size: 0.88rem;
+            outline: none;
+            cursor: pointer;
+            margin-bottom: 12px;
+            font-family: inherit;
+        }
+
+        select:focus {
+            border-color: var(--accent-blue);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px 14px;
+            background-color: var(--accent-blue);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: background-color 0.15s;
+            font-family: inherit;
+        }
+
+        button:hover {
+            background-color: #1d4ed8;
+        }
+
+        /* Main Workspace */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            padding: 32px 40px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+        }
+
+        .welcome-box h1 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .welcome-box p {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-top: 2px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+        }
+
+        /* Incident Banner */
+        .incident-banner {
+            display: none;
+            background-color: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .incident-banner.active {
+            display: block;
+        }
+
+        .incident-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .incident-header h2 {
+            color: var(--accent-red);
+            font-size: 1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .severity-tag {
+            background-color: #fee2e2;
+            color: var(--accent-red);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .incident-grid {
+            display: grid;
+            grid-template-columns: 3fr 1fr;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .incident-grid p {
+            color: #475569;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .confidence-box {
+            text-align: right;
+            border-left: 1px solid #fca5a5;
+            padding-left: 16px;
+        }
+
+        .confidence-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-red);
+        }
+
+        /* Metrics Grid */
+        .section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 12px;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .metric-card.anomaly {
+            border-color: #fca5a5;
+            background-color: #fffaf9;
+        }
+
+        .metric-title {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: #0f172a;
+        }
+
+        .metric-delta {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .metric-delta.up { color: var(--accent-green); }
+        .metric-delta.down { color: var(--accent-red); }
+
+        /* Audit Trail */
+        .audit-container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .audit-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 14px;
+            color: #0f172a;
+        }
+
+        .audit-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .audit-box {
+            background-color: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+
+        .audit-box h4 {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .audit-box pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #0f172a;
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Professional Sidebar -->
+    <aside>
+        <div>
+            <div class="brand-logo">
+                🛡️ Incident<span>Manager</span>
+            </div>
+        </div>
+
+        <div class="control-group">
+            <label for="scenarioSelect">Simulation Scenario</label>
+            <select id="scenarioSelect">
+                <option value="normal">Normal Baseline (All Green)</option>
+                <option value="payment_failure">Payment Gateway Failure</option>
+                <option value="database_slowdown">Database Slowdown</option>
+                <option value="traffic_spike">Traffic Surge</option>
+            </select>
+            <button onclick="runDiagnostics()">Run Diagnostics</button>
+        </div>
+
+        <div style="font-size: 0.75rem; color: var(--sidebar-text); border-top: 1px solid #1e293b; padding-top: 16px;">
+            Environment: Production <br>
+            Engine: Gemini 2.5 Flash
+        </div>
+    </aside>
+
+    <!-- Main Content Workspace -->
+    <main>
+        <div class="top-bar">
+            <div class="welcome-box">
+                <h1>Operations Dashboard <color>white</color></h1>
+                <p>Real-time system telemetry and multi-agent incident analysis console.</p>
+            </div>
+            <div class="status-badge">
+                <div class="status-dot"></div> Systems Operational
+            </div>
+        </div>
+
+        <!-- Incident Banner -->
+        <div id="incidentBanner" class="incident-banner">
+            <div class="incident-header">
+                <h2>⚠️ <span id="rootCauseTitle">Payment Gateway Failure</span></h2>
+                <div class="severity-tag" id="incidentSeverity">High</div>
+            </div>
+            <div class="incident-grid">
+                <div>
+                    <p id="rootCauseSummary">Multi-agent analysis has detected core operational constraints tied to downstream payment providers.</p>
+                </div>
+                <div class="confidence-box">
+                    <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Confidence</div>
+                    <div class="confidence-val" id="confidenceVal">89%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-title">Live Telemetry Feed</div>
+        
+        <!-- Metrics Grid -->
+        <div id="metricsContainer" class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-title">ORDERS</div>
+                <div class="metric-value">1,000</div>
+                <div class="metric-delta up">Stable baseline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">REVENUE</div>
+                <div class="metric-value">₹8,50,000</div>
+                <div class="metric-delta up">Stable baseline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">API LATENCY</div>
+                <div class="metric-value">200 ms</div>
+                <div class="metric-delta up">Stable baseline</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-title">API ERRORS</div>
+                <div class="metric-value">0.5%</div>
+                <div class="metric-delta up">Stable baseline</div>
+            </div>
+        </div>
+
+        <!-- Multi-Agent Audit Trail -->
+        <div class="audit-container">
+            <div class="audit-title">Multi-Agent Telemetry Stream</div>
+            <div class="audit-grid">
+                <div class="audit-box">
+                    <h4>Data Agent Findings</h4>
+                    <pre id="dataAgentLog">Awaiting diagnostic run...</pre>
+                </div>
+                <div class="audit-box">
+                    <h4>Log Agent & Raw System Logs</h4>
+                    <pre id="logAgentLog">Awaiting diagnostic run...</pre>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        async function runDiagnostics() {
+            const scenario = document.getElementById('scenarioSelect').value;
+            const btn = document.querySelector('button');
+            btn.innerText = "Analyzing...";
+            
+            try {
+                const response = await fetch('http://127.0.0.1:8000/investigate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scenario: scenario })
+                });
+
+                const data = await response.json();
+                renderDashboard(data);
+            } catch (err) {
+                alert("Failed to connect to backend server. Ensure Uvicorn is running.");
+                console.error(err);
+            } finally {
+                btn.innerText = "Run Diagnostics";
+            }
+        }
+
+        function renderDashboard(data) {
+            const container = document.getElementById('metricsContainer');
+            container.innerHTML = '';
+
+            for (const [metric, info] of Object.entries(data.metrics)) {
+                const isAnomaly = info.is_anomaly;
+                const card = document.createElement('div');
+                card.className = `metric-card ${isAnomaly ? 'anomaly' : ''}`;
+                
+                card.innerHTML = `
+                    <div class="metric-title">${metric.replace('_', ' ').toUpperCase()}</div>
+                    <div class="metric-value">${info.current_value}</div>
+                    <div class="metric-delta ${info.percentage_change < 0 ? 'down' : 'up'}">
+                        ${info.percentage_change > 0 ? '+' : ''}${info.percentage_change}% vs baseline
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+
+            const banner = document.getElementById('incidentBanner');
+            if (data.incident_detected) {
+                banner.classList.add('active');
+                document.getElementById('incidentSeverity').innerText = data.report.severity;
+                document.getElementById('rootCauseTitle').innerText = data.report.root_cause;
+                document.getElementById('rootCauseSummary').innerText = data.report.summary;
+                document.getElementById('confidenceVal').innerText = data.report.confidence + '%';
+
+                document.getElementById('dataAgentLog').innerText = data.evidence.data_agent;
+                document.getElementById('logAgentLog').innerText = `[LOG AGENT]:\n${data.evidence.log_agent}\n\n[RAW LOGS]:\n${data.evidence.raw_logs}`;
+            } else {
+                banner.classList.remove('active');
+                document.getElementById('dataAgentLog').innerText = "All metrics are stable within expected statistical variance.";
+                document.getElementById('logAgentLog').innerText = "System health check OK. No error signatures logged.";
+            }
+        }
+    </script>
+</body>
+</html>
