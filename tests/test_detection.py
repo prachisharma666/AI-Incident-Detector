@@ -11,7 +11,7 @@ def test_normal_scenario():
     assert incident["anomaly_count"] == 0
 
 def test_payment_failure_scenario():
-    df = generate_data("payment_failures")
+    df = generate_data("payment_failure")
     anomalies = detect_anomalies(df)
     incident = check_incidents(anomalies)
     assert incident["is_incident"] == True
