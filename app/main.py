@@ -8,8 +8,16 @@ from detection.da.incident_detector import check_incidents
 from agents.data_agent import analyze_data
 from agents.log_agent import analyze_logs
 from agents.root_cause_agent import deteremine_root_cause
+from fastapi.middleware.cors import CORSMiddleware
+
 load_dotenv()
 app=FastAPI(title="AI Incident Detector")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # or restrict to your frontend's domain in production
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 class Scenariorequest(BaseModel):
     scenario:str
 @app.get("/health")
