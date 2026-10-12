@@ -434,10 +434,10 @@
             btn.innerText = "Analyzing...";
             
             try {
-                const response = await fetch('http://127.0.0.1:8000/investigate', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ scenario: scenario })
+                const response = await fetch('/investigate', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify({ scenario: scenario }),
                 });
 
                 const data = await response.json();
