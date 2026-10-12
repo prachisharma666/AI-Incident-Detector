@@ -35,7 +35,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* Professional Dark Sidebar */
         aside {
             width: 270px;
             background-color: var(--bg-sidebar);
@@ -114,7 +113,6 @@
             background-color: #1d4ed8;
         }
 
-        /* Main Workspace */
         main {
             flex: 1;
             display: flex;
@@ -164,7 +162,6 @@
             background-color: var(--accent-green);
         }
 
-        /* Incident Banner */
         .incident-banner {
             display: none;
             background-color: #fef2f2;
@@ -229,7 +226,6 @@
             color: var(--accent-red);
         }
 
-        /* Metrics Grid */
         .section-title {
             font-size: 0.85rem;
             font-weight: 600;
@@ -281,7 +277,6 @@
         .metric-delta.up { color: var(--accent-green); }
         .metric-delta.down { color: var(--accent-red); }
 
-        /* Audit Trail */
         .audit-container {
             background-color: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -331,7 +326,6 @@
 </head>
 <body>
 
-    <!-- Professional Sidebar -->
     <aside>
         <div>
             <div class="brand-logo">
@@ -356,11 +350,10 @@
         </div>
     </aside>
 
-    <!-- Main Content Workspace -->
     <main>
         <div class="top-bar">
             <div class="welcome-box">
-                <h1>Operations Dashboard <color>white</color></h1>
+                <h1>Operations Dashboard</h1>
                 <p>Real-time system telemetry and multi-agent incident analysis console.</p>
             </div>
             <div class="status-badge">
@@ -368,7 +361,6 @@
             </div>
         </div>
 
-        <!-- Incident Banner -->
         <div id="incidentBanner" class="incident-banner">
             <div class="incident-header">
                 <h2>⚠️ <span id="rootCauseTitle">Payment Gateway Failure</span></h2>
@@ -376,7 +368,7 @@
             </div>
             <div class="incident-grid">
                 <div>
-                    <p id="rootCauseSummary">Multi-agent analysis has detected core operational constraints tied to downstream payment providers.</p>
+                    <p id="rootCauseSummary">Multi-agent analysis has detected core operational constraints.</p>
                 </div>
                 <div class="confidence-box">
                     <div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; font-weight: 600;">Confidence</div>
@@ -387,7 +379,6 @@
 
         <div class="section-title">Live Telemetry Feed</div>
         
-        <!-- Metrics Grid -->
         <div id="metricsContainer" class="metrics-grid">
             <div class="metric-card">
                 <div class="metric-title">ORDERS</div>
@@ -411,7 +402,6 @@
             </div>
         </div>
 
-        <!-- Multi-Agent Audit Trail -->
         <div class="audit-container">
             <div class="audit-title">Multi-Agent Telemetry Stream</div>
             <div class="audit-grid">
@@ -434,16 +424,17 @@
             btn.innerText = "Analyzing...";
             
             try {
+                // Uses relative path to communicate with the production server seamlessly
                 const response = await fetch('/investigate', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify({ scenario: scenario }),
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ scenario: scenario }),
                 });
 
                 const data = await response.json();
                 renderDashboard(data);
             } catch (err) {
-                alert("Failed to connect to backend server. Ensure Uvicorn is running.");
+                alert("Failed to connect to backend server.");
                 console.error(err);
             } finally {
                 btn.innerText = "Run Diagnostics";
