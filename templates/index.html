@@ -434,7 +434,11 @@
                 const data = await response.json();
                 renderDashboard(data);
             } catch (err) {
-                alert("Failed to connect to backend server.");
+                response.json().then(errorData => {
+                    alert("Backend Error: " + (errorData.detail || err.message));
+                }).catch(() => {
+                    alert("Failed to connect to backend server.");
+                });
                 console.error(err);
             } finally {
                 btn.innerText = "Run Diagnostics";
