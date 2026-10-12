@@ -50,3 +50,4 @@ typing_extensions==4.16.0
 tzdata==2026.4
 wcwidth==0.9.2
 Werkzeug==3.1.9
+gunicorn==22.0.0
