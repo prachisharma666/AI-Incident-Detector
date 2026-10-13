@@ -9,7 +9,7 @@ You are an expert Data Analyst Agent. Anallyze the following metrics anomalies a
 Focus on the Business annd the Technical impact of the anomalies. Provide actionable insights and recommendations for each affected metric.
 Anomalies:{abnormal_metrics}"""
     response=client.models.generate_content(
-        model="gemini-3.6-flash",
+        model="gemini-3.5-flash-lite",
         contents=prompt
     )
     return response.text
