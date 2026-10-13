@@ -2,7 +2,7 @@ import pandas as pd
 import numpy as np
 def detect_anomalies(df:pd.DataFrame,threshold=3.0)->dict:
     anomalies={}
-    baseline=df.iloc[::-1]
+    baseline=df.iloc[:-1]
     current=df.iloc[-1]
     for i in df.columns:
         mean=baseline[i].mean()
